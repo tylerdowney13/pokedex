@@ -8,19 +8,19 @@ c = conn.cursor()
 
 # Update Entry
 # c.execute("""UPDATE pokedex SET
-    name = "Magmar",
-    type = "Fire",
-    height = "1.3 m",
-    weight = "44.5 kg",
-    hp = "65",
-    attack = "95",
-    defense = "57",
-    spatk = "100",
-    spdef = "85",
-    speed = "93",
-    img = "126"
+    name = "Chansey",
+    type = "Normal",
+    height = "1.1 m",
+    weight = "34.6 kg",
+    hp = "150",
+    attack = "5",
+    defense = "5",
+    spatk = "35",
+    spdef = "105",
+    speed = "50",
+    img = "113"
 
-    WHERE rowid = 126
+    WHERE rowid = 113
     """)
 
 conn.commit()
