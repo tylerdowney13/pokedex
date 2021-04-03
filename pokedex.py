@@ -1,12 +1,14 @@
 from tkinter import *
+import tkinter as tk
 from PIL import ImageTk, Image
 import sqlite3
+from tkinter import messagebox
 
 # Create initial window
 root = Tk()
 root.title("Pokédex")
 root.iconbitmap("pokeball.ico")
-root.geometry("425x575")
+root.geometry("425x600")
 
 
 # Stats bar function
@@ -28,6 +30,7 @@ def stats_bar(stat):
 
 
 name_label_stats = ""
+
 # SEARCH BY NUMBER FUNCTION
 def search_by_number():
     # Get number
@@ -293,6 +296,508 @@ search_number_button.grid(row=0, column=2, pady=(15, 0))
 
 search_name_button = Button(root, text="Search by Name", padx=8, command=search_by_name)
 search_name_button.grid(row=1, column=2, pady=(15, 0))
+
+
+# Menu Functions
+def exit():
+    root.quit()
+
+def edit_pokemon():
+    # Get Input
+    if number_box.get() == "":
+        messagebox.showerror(title="Input Error", message="Please enter a Pokemon number in the number box.")
+    else:
+        row_number = number_box.get()
+
+        # Create Edit Pokemon Window
+        edit_pokemon_window = tk.Toplevel()
+        edit_pokemon_window.title("Edit Pokemon")
+        edit_pokemon_window.iconbitmap("pokeball.ico")
+        edit_pokemon_window.geometry("190x370")
+        edit_pokemon_window.attributes("-topmost", True)
+
+        # Create connection to database
+        conn = sqlite3.connect('pokedex.db')
+        # Create cursor
+        c = conn.cursor()
+        # Query Database
+        c.execute("SELECT * FROM pokedex WHERE rowid = " + row_number)
+        # Assign data to a variable
+        stats = c.fetchone()
+        # Assign values to variable names
+        stats_name = stats[0]
+        stats_type = stats[1]
+        stats_height = stats[2]
+        stats_weight = stats[3]
+        stats_hp = stats[4]
+        stats_attack = stats[5]
+        stats_defense = stats[6]
+        stats_spatk = stats[7]
+        stats_spdef = stats[8]
+        stats_speed = stats[9]
+        stats_img = stats[10]
+        edit_number = int(stats_img)
+
+        # Close Connection
+        conn.close()
+
+        # Number and Name Label
+        pokemon_name_label = Label(edit_pokemon_window, text=f"{stats_img} {stats_name}", font=("Arial", 20))
+        pokemon_name_label.grid(row=0, column=0, columnspan=2)
+
+        # Labels and Entry Boxes
+        # Type
+        type_label = Label(edit_pokemon_window, text="Type: ")
+        type_label.grid(row=1, column=0, pady=5, sticky="w")
+        type_entry = Entry(edit_pokemon_window, width=15)
+        type_entry.grid(row=1, column=1, pady=5, sticky="w")
+        type_entry.insert(0, stats_type)
+        type_entry.focus_set()
+
+        # Height
+        height_label = Label(edit_pokemon_window, text="Height: ")
+        height_label.grid(row=2, column=0, pady=5, sticky="w")
+        height_entry = Entry(edit_pokemon_window, width=15)
+        height_entry.grid(row=2, column=1, pady=5, sticky="w")
+        height_entry.insert(0, stats_height)
+
+        # Height
+        weight_label = Label(edit_pokemon_window, text="Weight: ")
+        weight_label.grid(row=3, column=0, pady=5, sticky="w")
+        weight_entry = Entry(edit_pokemon_window, width=15)
+        weight_entry.grid(row=3, column=1, pady=5, sticky="w")
+        weight_entry.insert(0, stats_weight)
+
+        # Weight
+        hp_label = Label(edit_pokemon_window, text="HP: ")
+        hp_label.grid(row=4, column=0, pady=5, sticky="w")
+        hp_entry = Entry(edit_pokemon_window, width=15)
+        hp_entry.grid(row=4, column=1, pady=5, sticky="w")
+        hp_entry.insert(0, stats_hp)
+
+        # Attack
+        attack_label = Label(edit_pokemon_window, text="Attack: ")
+        attack_label.grid(row=5, column=0, pady=5, sticky="w")
+        attack_entry = Entry(edit_pokemon_window, width=15)
+        attack_entry.grid(row=5, column=1, pady=5, sticky="w")
+        attack_entry.insert(0, stats_attack)
+
+        # Defense
+        defense_label = Label(edit_pokemon_window, text="Defense: ")
+        defense_label.grid(row=6, column=0, pady=5, sticky="w")
+        defense_entry = Entry(edit_pokemon_window, width=15)
+        defense_entry.grid(row=6, column=1, pady=5, sticky="w")
+        defense_entry.insert(0, stats_defense)
+
+        # SP ATK
+        spatk_label = Label(edit_pokemon_window, text="SP ATK: ")
+        spatk_label.grid(row=7, column=0, pady=5, sticky="w")
+        spatk_entry = Entry(edit_pokemon_window, width=15)
+        spatk_entry.grid(row=7, column=1, pady=5, sticky="w")
+        spatk_entry.insert(0, stats_spatk)
+
+        # SP DEF
+        spdef_label = Label(edit_pokemon_window, text="SP DEF: ")
+        spdef_label.grid(row=8, column=0, pady=5, sticky="w")
+        spdef_entry = Entry(edit_pokemon_window, width=15)
+        spdef_entry.grid(row=8, column=1, pady=5, sticky="w")
+        spdef_entry.insert(0, stats_spdef)
+
+        # SP DEF
+        speed_label = Label(edit_pokemon_window, text="Speed: ")
+        speed_label.grid(row=9, column=0, pady=5, sticky="w")
+        speed_entry = Entry(edit_pokemon_window, width=15)
+        speed_entry.grid(row=9, column=1, pady=5, sticky="w")
+        speed_entry.insert(0, stats_speed)
+
+
+        # Validate and Get Entry Data
+        def edit():
+            # Validate Entry Boxes
+            if type_entry.get() == "":
+                messagebox.showerror(title="Input Error", message="Type cannot be blank")
+                type_entry.focus_set()
+                return
+            else:
+                edit_type = type_entry.get()
+
+            if height_entry.get() == "":
+                messagebox.showerror(title="Input Error", message="Height cannot be blank")
+                height_entry.focus_set()
+                return
+            else:
+                edit_height = height_entry.get()
+
+            if weight_entry.get() == "":
+                messagebox.showerror(title="Input Error", message="Weight cannot be blank")
+                weight_entry.focus_set()
+                return
+            else:
+                edit_weight = weight_entry.get()
+
+            if hp_entry.get() == "":
+                messagebox.showerror(title="Input Error", message="HP cannot be blank")
+                hp_entry.focus_set()
+                return
+            else:
+                edit_hp = hp_entry.get()
+
+            if attack_entry.get() == "":
+                messagebox.showerror(title="Input Error", message="Attack cannot be blank")
+                attack_entry.focus_set()
+                return
+            elif attack_entry.get().isdigit() and len(defense_entry.get()) <= 3 and int(attack_entry.get()) < 200:
+                edit_attack = attack_entry.get()
+            else:
+                messagebox.showerror(title="Input Error", message="Attack must be an 1 - 3 digit integer between 1 and 200")
+                attack_entry.focus_set()
+                return
+
+            if defense_entry.get() == "":
+                messagebox.showerror(title="Input Error", message="Defense cannot be blank")
+                defense_entry.focus_set()
+                return
+            elif defense_entry.get().isdigit() and len(defense_entry.get()) <= 3 and int(defense_entry.get()) < 200:
+                edit_defense = defense_entry.get()
+            else:
+                messagebox.showerror(title="Input Error", message="Attack must be an 1 - 3 digit integer between 1 and 200")
+                defense_entry.focus_set()
+                return
+
+            if spatk_entry.get() == "":
+                messagebox.showerror(title="Input Error", message="SP ATK cannot be blank")
+                spatk_entry.focus_set()
+                return
+            elif spatk_entry.get().isdigit() and len(spatk_entry.get()) <= 3 and int(spatk_entry.get()) < 200:
+                edit_spatk = spatk_entry.get()
+            else:
+                messagebox.showerror(title="Input Error", message="SP ATK must be an 1 - 3 digit integer between 1 and 200")
+                spatk_entry.focus_set()
+                return
+
+            if spdef_entry.get() == "":
+                messagebox.showerror(title="Input Error", message="SP DEF cannot be blank")
+                spdef_entry.focus_set()
+                return
+            elif spdef_entry.get().isdigit() and len(spdef_entry.get()) <= 3 and int(spdef_entry.get()) < 200:
+                edit_spdef = spdef_entry.get()
+            else:
+                messagebox.showerror(title="Input Error", message="SP DEF must be an 1 - 3 digit integer between 1 and 200")
+                spdef_entry.focus_set()
+                return
+
+            if speed_entry.get() == "":
+                messagebox.showerror(title="Input Error", message="Speed cannot be blank")
+                speed_entry.focus_set()
+                return
+            elif speed_entry.get().isdigit() and len(speed_entry.get()) <= 3 and int(speed_entry.get()) < 200:
+                edit_speed = speed_entry.get()
+            else:
+                messagebox.showerror(title="Input Error", message="Speed must be an 1 - 3 digit integer between 1 and 200")
+                speed_entry.focus_set()
+                return
+
+            # Update Pokedex.db
+            # Create connection to database
+            conn = sqlite3.connect('pokedex.db')
+
+            # Create cursor
+            c = conn.cursor()
+
+            # Update Entry
+            c.execute(f"""UPDATE pokedex SET
+                name = '{stats_name}',
+                type = '{edit_type}',
+                height = '{edit_height}',
+                weight = '{edit_weight}',
+                hp = '{edit_hp}',
+                attack = '{edit_attack}',
+                defense = '{edit_defense}',
+                spatk = '{edit_spatk}',
+                spdef = '{edit_spdef}',
+                speed = '{edit_speed}',
+                img = '{stats_img}'
+
+                WHERE rowid = {edit_number}
+                """)
+
+            conn.commit()
+            conn.close()
+
+
+        # Edit Button
+        edit_button = Button(edit_pokemon_window, text="Edit", command=edit)
+        edit_button.grid(row=10, column=0, columnspan=2, ipadx=30, ipady=10)
+
+def add_pokemon():
+    # Create Add Pokemon Window
+    add_pokemon_window = tk.Toplevel()
+    add_pokemon_window.title("Add Pokemon")
+    add_pokemon_window.iconbitmap("pokeball.ico")
+    add_pokemon_window.geometry("170x400")
+    add_pokemon_window.attributes("-topmost", True)
+
+    # Get Pokemon Number
+    # Create connection to database
+    conn = sqlite3.connect('pokedex.db')
+
+    # Create cursor
+    c = conn.cursor()
+
+    # Get Last Row ID
+    c.execute("SELECT rowid from pokedex")
+
+    # Get Last Row ID
+    last_rowid = c.fetchall()
+
+    conn.close()
+
+    last_row_id_str = str(last_rowid[-1])
+
+    # Define Current Row ID
+    current_row_id = int(last_row_id_str[1:4]) + 1
+
+    current_row_id_str = str(current_row_id)
+
+
+    # Labels and Entry Boxes
+    # Number Label
+    number_label = Label(add_pokemon_window, text="Number: ")
+    number_label.grid(row=0, column=0, pady=5)
+    pokedex_number_label = Label(add_pokemon_window, text=f"{current_row_id_str}")
+    pokedex_number_label.grid(row=0, column=1, pady=5, sticky="w")
+
+
+    # Name
+    name_label = Label(add_pokemon_window, text="Name: ")
+    name_label.grid(row=1, column=0, pady=5, sticky="w")
+    name_entry = Entry(add_pokemon_window, width=15)
+    name_entry.grid(row=1, column=1, pady=5, sticky="w")
+
+    # Type
+    type_label = Label(add_pokemon_window, text="Type: ")
+    type_label.grid(row=2, column=0, pady=5, sticky="w")
+    type_entry = Entry(add_pokemon_window, width=15)
+    type_entry.grid(row=2, column=1, pady=5, sticky="w")
+
+    # Height
+    height_label = Label(add_pokemon_window, text="Height: ")
+    height_label.grid(row=3, column=0, pady=5, sticky="w")
+    height_entry = Entry(add_pokemon_window, width=15)
+    height_entry.grid(row=3, column=1, pady=5, sticky="w")
+
+    # Height
+    weight_label = Label(add_pokemon_window, text="Weight: ")
+    weight_label.grid(row=4, column=0, pady=5, sticky="w")
+    weight_entry = Entry(add_pokemon_window, width=15)
+    weight_entry.grid(row=4, column=1, pady=5, sticky="w")
+
+    # Weight
+    hp_label = Label(add_pokemon_window, text="HP: ")
+    hp_label.grid(row=5, column=0, pady=5, sticky="w")
+    hp_entry = Entry(add_pokemon_window, width=15)
+    hp_entry.grid(row=5, column=1, pady=5, sticky="w")
+
+    # Attack
+    attack_label = Label(add_pokemon_window, text="Attack: ")
+    attack_label.grid(row=6, column=0, pady=5, sticky="w")
+    attack_entry = Entry(add_pokemon_window, width=15)
+    attack_entry.grid(row=6, column=1, pady=5, sticky="w")
+
+    # Defense
+    defense_label = Label(add_pokemon_window, text="Defense: ")
+    defense_label.grid(row=7, column=0, pady=5, sticky="w")
+    defense_entry = Entry(add_pokemon_window, width=15)
+    defense_entry.grid(row=7, column=1, pady=5, sticky="w")
+
+    # SP ATK
+    spatk_label = Label(add_pokemon_window, text="SP ATK: ")
+    spatk_label.grid(row=8, column=0, pady=5, sticky="w")
+    spatk_entry = Entry(add_pokemon_window, width=15)
+    spatk_entry.grid(row=8, column=1, pady=5, sticky="w")
+
+    # SP DEF
+    spdef_label = Label(add_pokemon_window, text="SP DEF: ")
+    spdef_label.grid(row=9, column=0, pady=5, sticky="w")
+    spdef_entry = Entry(add_pokemon_window, width=15)
+    spdef_entry.grid(row=9, column=1, pady=5, sticky="w")
+
+    # SP DEF
+    speed_label = Label(add_pokemon_window, text="Speed: ")
+    speed_label.grid(row=10, column=0, pady=5, sticky="w")
+    speed_entry = Entry(add_pokemon_window, width=15)
+    speed_entry.grid(row=10, column=1, pady=5, sticky="w")
+
+
+    # Validate and Get Entry Data
+    def add():
+        # Validate Entry Boxes
+        if name_entry.get() == "":
+            messagebox.showerror(title="Input Error", message="Name cannot be blank")
+            name_entry.focus_set()
+            return
+        else:
+            name_add = name_entry.get()
+
+        if type_entry.get() == "":
+            messagebox.showerror(title="Input Error", message="Type cannot be blank")
+            type_entry.focus_set()
+            return
+        else:
+            type_add = type_entry.get()
+
+        if height_entry.get() == "":
+            messagebox.showerror(title="Input Error", message="Height cannot be blank")
+            height_entry.focus_set()
+            return
+        else:
+            height_add = height_entry.get()
+
+        if weight_entry.get() == "":
+            messagebox.showerror(title="Input Error", message="Weight cannot be blank")
+            weight_entry.focus_set()
+            return
+        else:
+            weight_add = weight_entry.get()
+
+        if hp_entry.get() == "":
+            messagebox.showerror(title="Input Error", message="HP cannot be blank")
+            hp_entry.focus_set()
+            return
+        else:
+            hp_add = hp_entry.get()
+
+        if attack_entry.get() == "":
+            messagebox.showerror(title="Input Error", message="Attack cannot be blank")
+            attack_entry.focus_set()
+            return
+        elif attack_entry.get().isdigit() and len(defense_entry.get()) <= 3 and int(attack_entry.get()) < 200:
+            attack_add = attack_entry.get()
+        else:
+            messagebox.showerror(title="Input Error", message="Attack must be an 1 - 3 digit integer between 1 and 200")
+            attack_entry.focus_set()
+            return
+
+        if defense_entry.get() == "":
+            messagebox.showerror(title="Input Error", message="Defense cannot be blank")
+            defense_entry.focus_set()
+            return
+        elif defense_entry.get().isdigit() and len(defense_entry.get()) <= 3 and int(defense_entry.get()) < 200:
+            defense_add = defense_entry.get()
+        else:
+            messagebox.showerror(title="Input Error", message="Attack must be an 1 - 3 digit integer between 1 and 200")
+            defense_entry.focus_set()
+            return
+
+        if spatk_entry.get() == "":
+            messagebox.showerror(title="Input Error", message="SP ATK cannot be blank")
+            spatk_entry.focus_set()
+            return
+        elif spatk_entry.get().isdigit() and len(spatk_entry.get()) <= 3 and int(spatk_entry.get()) < 200:
+            spatk_add = spatk_entry.get()
+        else:
+            messagebox.showerror(title="Input Error", message="SP ATK must be an 1 - 3 digit integer between 1 and 200")
+            spatk_entry.focus_set()
+            return
+
+        if spdef_entry.get() == "":
+            messagebox.showerror(title="Input Error", message="SP DEF cannot be blank")
+            spdef_entry.focus_set()
+            return
+        elif spdef_entry.get().isdigit() and len(spdef_entry.get()) <= 3 and int(spdef_entry.get()) < 200:
+            spdef_add = spdef_entry.get()
+        else:
+            messagebox.showerror(title="Input Error", message="SP DEF must be an 1 - 3 digit integer between 1 and 200")
+            spdef_entry.focus_set()
+            return
+
+        if speed_entry.get() == "":
+            messagebox.showerror(title="Input Error", message="Speed cannot be blank")
+            speed_entry.focus_set()
+            return
+        elif speed_entry.get().isdigit() and len(speed_entry.get()) <= 3 and int(speed_entry.get()) < 200:
+            speed_add = speed_entry.get()
+        else:
+            messagebox.showerror(title="Input Error", message="Speed must be an 1 - 3 digit integer between 1 and 200")
+            speed_entry.focus_set()
+            return
+
+
+        # Update Current Row ID
+        # Create connection to database
+        conn = sqlite3.connect('pokedex.db')
+
+        # Create cursor
+        c = conn.cursor()
+
+        # Get Last Row ID
+        c.execute("SELECT rowid from pokedex")
+
+        # Get Last Row ID
+        last_rowid = c.fetchall()
+
+        c.close()
+
+        last_row_id_str = str(last_rowid[-1])
+
+        # Define Current Row ID
+        current_row_id = int(last_row_id_str[1:4]) + 1
+
+        current_row_id_str = str(current_row_id)
+
+        # Assign Img Number
+        img_number = current_row_id
+
+        # Insert Values into Pokedex.db
+        # Create connection to database
+        conn = sqlite3.connect('pokedex.db')
+
+        # Create cursor
+        c = conn.cursor()
+
+        # Insert Values
+        c.execute(f"""INSERT INTO pokedex VALUES (
+            '{name_add}',
+            '{type_add}',
+            '{height_add}',
+            '{weight_add}',
+            '{hp_add}',
+            '{attack_add}',
+            '{defense_add}',
+            '{spatk_add}',
+            '{spdef_add}',
+            '{speed_add}',
+            '{img_number}'
+            )""")
+
+        # Commit and Close
+        conn.commit()
+        conn.close()
+
+        # Reset Window
+        add_pokemon_window.destroy()
+
+        add_pokemon()
+
+
+        # Add Record to Pokedex.db
+
+
+    # Add Button
+    add_button = Button(add_pokemon_window, text="Add Pokemon", command=add)
+    add_button.grid(row=11, column=0, columnspan=2, padx=(10, 0), ipadx=20, ipady=10)
+
+
+
+# ROOT MENU
+root_menu = Menu(root, tearoff=False)
+root.config(menu=root_menu)
+
+file_menu = Menu(root_menu, tearoff=False)
+root_menu.add_cascade(label="File", menu=file_menu)
+file_menu.add_command(label="Add Pokemon", command=add_pokemon)
+file_menu.add_command(label="Edit Pokemon", command=edit_pokemon)
+file_menu.add_command(label="Exit", command=exit)
 
 
 
